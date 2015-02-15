@@ -25,6 +25,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.bitcoin.protocols.payments.Protos.Payment;
+
 import com.dogecoin.dogecoinj.core.Address;
 import com.dogecoin.dogecoinj.core.AddressFormatException;
 import com.dogecoin.dogecoinj.core.Coin;
@@ -43,6 +44,8 @@ import com.dogecoin.dogecoinj.core.Wallet.SendRequest;
 import com.dogecoin.dogecoinj.protocols.payments.PaymentProtocol;
 import com.dogecoin.dogecoinj.utils.MonetaryFormat;
 import com.dogecoin.dogecoinj.wallet.KeyChain.KeyPurpose;
+
+import org.multibit.txt.txtrecords;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
@@ -192,6 +195,16 @@ public final class SendCoinsFragment extends Fragment
 		{
 			if (!hasFocus)
 			{
+				
+				//Txt Records
+				txtrecords record = new txtrecords();
+				final String addressStr = receivingAddressView.getText().toString().trim();
+				//record.MyAsyncTask();
+				record.PassTextBox(receivingAddressView);
+				record.execute(addressStr);
+				
+				
+				
 				validateReceivingAddress();
 				updateView();
 			}
@@ -214,6 +227,9 @@ public final class SendCoinsFragment extends Fragment
 		@Override
 		public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
 		{
+			
+			
+			
 		}
 	}
 
@@ -508,6 +524,7 @@ public final class SendCoinsFragment extends Fragment
 		backgroundThread.start();
 		backgroundHandler = new Handler(backgroundThread.getLooper());
 
+		
 		if (savedInstanceState != null)
 		{
 			restoreInstanceState(savedInstanceState);
@@ -573,13 +590,19 @@ public final class SendCoinsFragment extends Fragment
 
 		receivingStaticView.setOnFocusChangeListener(new OnFocusChangeListener()
 		{
+			
+			
+			
 			private ActionMode actionMode;
 
 			@Override
 			public void onFocusChange(final View v, final boolean hasFocus)
 			{
+				
+				
 				if (hasFocus)
 				{
+					
 					final Address address = paymentIntent.hasAddress() ? paymentIntent.getAddress()
 							: (validatedAddress != null ? validatedAddress.address : null);
 					if (address != null)
@@ -587,8 +610,13 @@ public final class SendCoinsFragment extends Fragment
 				}
 				else
 				{
+					
+					
 					actionMode.finish();
 				}
+				
+				
+				
 			}
 		});
 
@@ -861,9 +889,17 @@ public final class SendCoinsFragment extends Fragment
 
 	private void validateReceivingAddress()
 	{
+		
 		try
 		{
+			
 			final String addressStr = receivingAddressView.getText().toString().trim();
+		
+			
+			
+			
+			
+			
 			if (!addressStr.isEmpty() && Constants.NETWORK_PARAMETERS.equals(Address.getParametersFromAddress(addressStr)))
 			{
 				final String label = AddressBookProvider.resolveLabel(activity, addressStr);
@@ -925,6 +961,7 @@ public final class SendCoinsFragment extends Fragment
 		else
 			log.warn("unclear focus");
 	}
+	
 
 	private void handleGo()
 	{
@@ -1372,6 +1409,15 @@ public final class SendCoinsFragment extends Fragment
 		}
 	}
 
+	
+
+	public void setReceivingAddressView(String input) {
+		this.receivingAddressView.setText(input);
+	}
+	
+	
+	
+	
 	private void initStateFromIntentExtras(@Nonnull final Bundle extras)
 	{
 		final PaymentIntent paymentIntent = extras.getParcelable(SendCoinsActivity.INTENT_EXTRA_PAYMENT_INTENT);
